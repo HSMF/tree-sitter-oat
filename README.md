@@ -2,6 +2,8 @@
 
 This provides syntax highlighting for oat in editors
 
+![highlighting example in neovim, catppuccin btw](./screenshot.png)
+
 ## Installation
 
 ### Neovim
