@@ -13,10 +13,8 @@
   (null)
 ] @constant.builtin
 
-
 (fdecl (id) @function)
 (function_call (id) @function)
-
 
 (gdecl
   (id) @variable
@@ -31,14 +29,13 @@
   (uop)
 ] @operator
 
-
 [
- (global)
- (return)
- (while)
- (for)
- (if)
- (else)
- (var)
- (new)
+  (global)
+  (return)
+  (while)
+  (for)
+  (if)
+  (else)
+  (var)
+  (new)
 ] @keyword

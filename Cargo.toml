@@ -2,8 +2,8 @@
 name = "tree-sitter-oat"
 description = "oat grammar for the tree-sitter parsing library"
 version = "0.0.1"
-keywords = ["incremental", "parsing", "oat"]
-categories = ["parsing", "text-editors"]
+keywords = [ "incremental", "parsing", "oat" ]
+categories = [ "parsing", "text-editors" ]
 repository = "https://github.com/tree-sitter/tree-sitter-oat"
 edition = "2018"
 license = "MIT"
