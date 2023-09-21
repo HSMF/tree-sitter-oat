@@ -427,6 +427,25 @@
     }
   },
   {
+    "type": "string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_seq",
+          "named": true
+        },
+        {
+          "type": "unescaped",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "t",
     "named": true,
     "fields": {},
@@ -490,6 +509,10 @@
   },
   {
     "type": "!=",
+    "named": false
+  },
+  {
+    "type": "\"",
     "named": false
   },
   {
@@ -593,6 +616,10 @@
     "named": true
   },
   {
+    "type": "escape_seq",
+    "named": true
+  },
+  {
     "type": "false",
     "named": false
   },
@@ -634,15 +661,15 @@
   },
   {
     "type": "string",
-    "named": true
-  },
-  {
-    "type": "string",
     "named": false
   },
   {
     "type": "true",
     "named": false
+  },
+  {
+    "type": "unescaped",
+    "named": true
   },
   {
     "type": "var",

@@ -6,11 +6,17 @@
 
 (integer) @number
 (string) @string
+(escape_seq) @string.escape
 
 [
   (boolean)
   (null)
 ] @constant.builtin
+
+
+(fdecl (id) @function)
+(function_call (id) @function)
+
 
 (gdecl
   (id) @variable
@@ -18,10 +24,7 @@
 (vdecl
   (id) @variable
 )
-
-(fdecl (id) @function)
-(function_call (id) @function)
-
+(id) @variable
 
 [
   (bop)
