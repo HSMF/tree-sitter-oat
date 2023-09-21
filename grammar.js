@@ -37,11 +37,9 @@ module.exports = grammar({
     string: ($) => seq('"', repeat(choice($.unescaped, $.escape_seq)), '"'),
     unescaped: (_) => token.immediate(prec(1, /[^"\\]+/)),
     escape_seq: (_) =>
-      token.immediate(seq("\\", choice(
-        /x[a-fA-F0-9]{2}/, 
-        /[0-7]{1,3}/,
-        /[nr\\]/
-      ))),
+      token.immediate(
+        seq("\\", choice(/x[a-fA-F0-9]{2}/, /[0-7]{1,3}/, /[nr\\]/))
+      ),
 
     gexp: ($) =>
       choice(
