@@ -22,7 +22,6 @@
 (vdecl
   (id) @variable
 )
-(id) @variable
 
 [
   (bop)
@@ -39,3 +38,7 @@
   (var)
   (new)
 ] @keyword
+
+(comment) @comment
+
+(ERROR) @error

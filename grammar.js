@@ -101,8 +101,13 @@ module.exports = grammar({
     else_stmt: ($) => seq(named("else", $), choice($.block, $.if_stmt)),
 
     id: (_) => /[a-zA-Z_]\w*/,
-
-    comment: (_) => seq("//", /.*/),
+    comment: (_) =>
+      token(
+        choice(
+          // seq("//", /(\\+(.|\r?\n)|[^\\\n])*/),
+          seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")
+        )
+      ),
   },
 });
 
