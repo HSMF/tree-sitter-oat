@@ -14,7 +14,7 @@
 ] @constant.builtin
 
 (fdecl (id) @function)
-(function_call (id) @function)
+(function_call func:(exp (id)) @function)
 
 (gdecl
   (id) @variable
@@ -22,6 +22,8 @@
 (vdecl
   (id) @variable
 )
+
+(Id) @type
 
 [
   (bop)
@@ -37,6 +39,7 @@
   (else)
   (var)
   (new)
+  (struct)
 ] @keyword
 
 (comment) @comment

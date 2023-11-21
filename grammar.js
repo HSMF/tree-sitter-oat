@@ -3,16 +3,25 @@ module.exports = grammar({
   extras: ($) => [$.comment, /\s/],
   rules: {
     prog: ($) => repeat($.decl),
-    decl: ($) => choice($.gdecl, $.fdecl),
+    decl: ($) => choice($.gdecl, $.fdecl, $.tdecl),
     fdecl: ($) => seq($.retty, $.id, "(", optional($.args), ")", $.block),
     gdecl: ($) => seq(named("global", $), $.id, "=", $.gexp, ";"),
+    tdecl: ($) => seq(named("struct", $), $.Id, "{", sep($.field, ";"), "}"),
+    field: ($) => seq($.t, $.id),
     arg: ($) => seq($.t, $.id),
     args: ($) => sep1($.arg, ","),
     block: ($) => seq("{", repeat($.stmt), "}"),
-    t: ($) => prec(1000, choice("int", "bool", $.ref)),
-    ref: ($) => choice("string", seq($.t, "[", "]")),
+    t: ($) => prec.left(choice("int", "bool", $.ref, seq($.ref, "?"))),
+    ref: ($) =>
+      choice(
+        "string",
+        seq($.t, "[", "]"),
+        $.Id,
+        seq("(", sep($.t, ","), ")", "->", $.retty),
+        seq("(", $.t, alias(")", ")"))
+      ),
     F: ($) => seq("(", sep($.t, ","), ")", "->", $.retty),
-    retty: ($) => choice("void", $.t),
+    retty: ($) => prec.right(choice("void", $.t)),
     bop: (_) =>
       choice(
         prec.left(100, "*"),
@@ -47,14 +56,42 @@ module.exports = grammar({
         $.string,
         seq($.ref, named("null", $)),
         $.boolean,
-        seq(named("new", $), $.t, "[", "]", "{", sep($.gexp, ","), "}")
+        seq(
+          optional(named("new", $)),
+          $.t,
+          "[",
+          "]",
+          "{",
+          sep($.gexp, ","),
+          "}"
+        ),
+        // this "optional" is following the specs but many test cases think it is
+        seq(
+          optional(named("new", $)),
+          $.Id,
+          "{",
+          sep(seq($.id, "=", $.gexp), ";"),
+          "}"
+        ),
+        $.id
       ),
-    lhs: ($) => choice($.id, seq($.exp, "[", $.exp, "]")),
+    lhs: ($) =>
+      choice(
+        $.id,
+        seq($.exp, "[", $.exp, "]"),
+        seq($.exp, ".", $.id),
+        $.function_call
+      ),
 
-    function_call: ($) => seq($.id, "(", sep($.exp, ","), ")"),
+    function_call: ($) =>
+      prec.left(
+        5,
+        seq(field("func", $.exp), "(", field("args", sep($.exp, ",")), ")")
+      ),
     boolean: (_) => choice("true", "false"),
     exp: ($) =>
       prec.left(
+        10,
         choice(
           $.id,
           $.string,
@@ -63,44 +100,75 @@ module.exports = grammar({
           $.boolean,
           seq($.exp, "[", $.exp, "]"),
           $.function_call,
-          seq(named("new", $), $.t, "[", "]", "{", sep($.gexp, ","), "}"),
-          seq(named("new", $), "int", "[", $.exp, "]"),
-          seq(named("new", $), "bool", "[", $.exp, "]"),
+          seq(
+            named("new", $),
+            $.t,
+            "[",
+            $.exp,
+            "]",
+            optional(seq("{", $.id, "->", $.exp, "}"))
+          ),
+          seq(named("new", $), $.t, "[", "]", "{", sep($.exp, ","), "}"),
+          seq(
+            optional(named("new", $)),
+            $.Id,
+            "{",
+            sep($.field_init_exp, ";"),
+            "}"
+          ),
           seq($.exp, $.bop, $.exp),
-          seq($.uop, $.bop),
-          seq("(", $.exp, ")")
+          seq($.uop, $.exp),
+          seq("(", $.exp, ")"),
+          seq($.exp, ".", $.id)
         )
       ),
+    field_init_exp: ($) => seq($.id, "=", $.exp),
 
     vdecl: ($) => seq(named("var", $), $.id, "=", $.exp),
     vdecls: ($) => sep1($.vdecl, ","),
     stmt: ($) =>
-      choice(
-        seq($.lhs, "=", $.exp, ";"),
-        seq($.vdecl, ";"),
-        seq(named("return", $), $.exp, ";"),
-        seq(named("return", $), ";"),
-        seq($.function_call, ";"),
-        $.if_stmt,
-        seq(
-          named("for", $),
-          "(",
-          optional($.vdecls),
-          ";",
-          optional($.exp),
-          ";",
-          optional($.stmt),
-          ")",
-          $.block
-        ),
-        seq(named("while", $), "(", $.exp, ")", $.block)
+      prec.left(
+        choice(
+          seq($.lhs, "=", $.exp, ";"),
+          seq($.vdecl, ";"),
+          seq(named("return", $), $.exp, ";"),
+          seq(named("return", $), ";"),
+          seq($.function_call, ";"),
+          $.if_stmt,
+          seq(
+            named("for", $),
+            "(",
+            optional($.vdecls),
+            ";",
+            optional($.exp),
+            ";",
+            optional($.stmt),
+            ")",
+            $.block
+          ),
+          seq(named("while", $), "(", $.exp, ")", $.block)
+        )
       ),
 
     if_stmt: ($) =>
-      seq(named("if", $), "(", $.exp, ")", $.block, optional($.else_stmt)),
+      choice(
+        seq(named("if", $), "(", $.exp, ")", $.block, optional($.else_stmt)),
+        seq(
+          alias("if?", $.if),
+          "(",
+          $.ref,
+          $.id,
+          "=",
+          $.exp,
+          ")",
+          $.block,
+          optional($.else_stmt)
+        )
+      ),
     else_stmt: ($) => seq(named("else", $), choice($.block, $.if_stmt)),
 
-    id: (_) => /[a-zA-Z_]\w*/,
+    id: (_) => /[a-z][a-zA-Z0-9_]*/,
+    Id: (_) => /[A-Z][a-zA-Z0-9_]*/,
     comment: (_) =>
       token(
         choice(

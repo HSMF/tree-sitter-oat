@@ -73,6 +73,10 @@
         {
           "type": "gdecl",
           "named": true
+        },
+        {
+          "type": "tdecl",
+          "named": true
         }
       ]
     }
@@ -109,6 +113,10 @@
       "required": true,
       "types": [
         {
+          "type": "Id",
+          "named": true
+        },
+        {
           "type": "boolean",
           "named": true
         },
@@ -121,11 +129,11 @@
           "named": true
         },
         {
-          "type": "function_call",
+          "type": "field_init_exp",
           "named": true
         },
         {
-          "type": "gexp",
+          "type": "function_call",
           "named": true
         },
         {
@@ -191,7 +199,26 @@
     }
   },
   {
-    "type": "function_call",
+    "type": "field",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "t",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "field_init_exp",
     "named": true,
     "fields": {},
     "children": {
@@ -207,6 +234,36 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "function_call",
+    "named": true,
+    "fields": {
+      "args": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "exp",
+            "named": true
+          }
+        ]
+      },
+      "func": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "exp",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -241,11 +298,19 @@
       "required": true,
       "types": [
         {
+          "type": "Id",
+          "named": true
+        },
+        {
           "type": "boolean",
           "named": true
         },
         {
           "type": "gexp",
+          "named": true
+        },
+        {
+          "type": "id",
           "named": true
         },
         {
@@ -296,7 +361,15 @@
           "named": true
         },
         {
+          "type": "id",
+          "named": true
+        },
+        {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "ref",
           "named": true
         }
       ]
@@ -312,6 +385,10 @@
       "types": [
         {
           "type": "exp",
+          "named": true
+        },
+        {
+          "type": "function_call",
           "named": true
         },
         {
@@ -341,9 +418,17 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "Id",
+          "named": true
+        },
+        {
+          "type": "retty",
+          "named": true
+        },
         {
           "type": "t",
           "named": true
@@ -456,6 +541,29 @@
     }
   },
   {
+    "type": "tdecl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "Id",
+          "named": true
+        },
+        {
+          "type": "field",
+          "named": true
+        },
+        {
+          "type": "struct",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "uop",
     "named": true,
     "fields": {}
@@ -543,6 +651,10 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": ";",
     "named": false
   },
@@ -581,6 +693,14 @@
   {
     "type": ">>>",
     "named": false
+  },
+  {
+    "type": "?",
+    "named": false
+  },
+  {
+    "type": "Id",
+    "named": true
   },
   {
     "type": "[",
@@ -657,6 +777,10 @@
   {
     "type": "string",
     "named": false
+  },
+  {
+    "type": "struct",
+    "named": true
   },
   {
     "type": "true",
